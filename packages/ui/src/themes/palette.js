@@ -6,7 +6,6 @@
 export default function themePalette(theme) {
     return {
         mode: theme?.customization?.navType,
-        transparent: theme.colors?.transparent,
         common: {
             black: theme.colors?.darkPaper,
             dark: theme.colors?.darkPrimaryMain
@@ -34,11 +33,6 @@ export default function themePalette(theme) {
             light: theme.colors?.orangeLight,
             main: theme.colors?.orangeMain,
             dark: theme.colors?.orangeDark
-        },
-        teal: {
-            light: theme.colors?.tealLight,
-            main: theme.colors?.tealMain,
-            dark: theme.colors?.tealDark
         },
         warning: {
             light: theme.colors?.warningLight,
@@ -78,10 +72,6 @@ export default function themePalette(theme) {
             paper: theme.paper,
             default: theme.backgroundDefault
         },
-        textBackground: {
-            main: theme.customization.isDarkMode ? theme.colors?.darkPrimary800 : theme.colors?.grey50,
-            border: theme.customization.isDarkMode ? theme.colors?.transparent : theme.colors?.grey400
-        },
         card: {
             main: theme.customization.isDarkMode ? theme.colors?.darkPrimaryMain : theme.colors?.paper,
             light: theme.customization.isDarkMode ? theme.colors?.darkPrimary200 : theme.colors?.paper,
@@ -89,9 +79,6 @@ export default function themePalette(theme) {
         },
         asyncSelect: {
             main: theme.customization.isDarkMode ? theme.colors?.darkPrimary800 : theme.colors?.grey50
-        },
-        timeMessage: {
-            main: theme.customization.isDarkMode ? theme.colors?.darkLevel2 : theme.colors?.grey200
         },
         canvasHeader: {
             deployLight: theme.colors?.primaryLight,

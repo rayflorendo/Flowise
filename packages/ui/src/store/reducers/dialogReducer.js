@@ -5,8 +5,7 @@ export const initialState = {
     title: '',
     description: '',
     confirmButtonName: 'OK',
-    cancelButtonName: 'Cancel',
-    customBtnId: ''
+    cancelButtonName: 'Cancel'
 }
 
 const alertReducer = (state = initialState, action) => {
@@ -17,8 +16,7 @@ const alertReducer = (state = initialState, action) => {
                 title: action.payload.title,
                 description: action.payload.description,
                 confirmButtonName: action.payload.confirmButtonName,
-                cancelButtonName: action.payload.cancelButtonName,
-                customBtnId: 'btn_confirmDeletingApiKey'
+                cancelButtonName: action.payload.cancelButtonName
             }
         case HIDE_CONFIRM:
             return initialState
