@@ -1,20 +1,20 @@
 {
-    "description": "Text file QnA using conversational retrieval QA chain",
+    "description": "Agent optimized for vector retrieval during conversation and answering questions based on previous dialogue.",
     "nodes": [
         {
             "width": 300,
-            "height": 522,
+            "height": 523,
             "id": "chatOpenAI_0",
             "position": {
-                "x": 1184.1176114500388,
-                "y": -44.15535835370571
+                "x": 1381.867549919116,
+                "y": 212.76900895393834
             },
             "type": "customNode",
             "data": {
                 "id": "chatOpenAI_0",
                 "label": "ChatOpenAI",
-                "name": "chatOpenAI",
                 "version": 1,
+                "name": "chatOpenAI",
                 "type": "ChatOpenAI",
                 "baseClasses": ["ChatOpenAI", "BaseChatModel", "BaseLanguageModel"],
                 "category": "Chat Models",
@@ -128,7 +128,7 @@
                 ],
                 "inputAnchors": [],
                 "inputs": {
-                    "modelName": "gpt-3.5-turbo",
+                    "modelName": "gpt-3.5-turbo-16k",
                     "temperature": "0",
                     "maxTokens": "",
                     "topP": "",
@@ -148,27 +148,27 @@
                 "outputs": {},
                 "selected": false
             },
-            "positionAbsolute": {
-                "x": 1184.1176114500388,
-                "y": -44.15535835370571
-            },
             "selected": false,
+            "positionAbsolute": {
+                "x": 1381.867549919116,
+                "y": 212.76900895393834
+            },
             "dragging": false
         },
         {
             "width": 300,
-            "height": 328,
+            "height": 329,
             "id": "openAIEmbeddings_0",
             "position": {
-                "x": 795.6162477805387,
-                "y": 603.260214150876
+                "x": 954.0674802999345,
+                "y": -196.7034956445692
             },
             "type": "customNode",
             "data": {
                 "id": "openAIEmbeddings_0",
                 "label": "OpenAI Embeddings",
-                "name": "openAIEmbeddings",
                 "version": 1,
+                "name": "openAIEmbeddings",
                 "type": "OpenAIEmbeddings",
                 "baseClasses": ["OpenAIEmbeddings", "Embeddings"],
                 "category": "Embeddings",
@@ -234,42 +234,42 @@
             },
             "selected": false,
             "positionAbsolute": {
-                "x": 795.6162477805387,
-                "y": 603.260214150876
+                "x": 954.0674802999345,
+                "y": -196.7034956445692
             },
             "dragging": false
         },
         {
             "width": 300,
-            "height": 554,
-            "id": "pineconeUpsert_0",
+            "height": 505,
+            "id": "pineconeExistingIndex_0",
             "position": {
-                "x": 1191.1792786926865,
-                "y": 514.2126330994578
+                "x": 1362.0018461011314,
+                "y": -334.0373537488481
             },
             "type": "customNode",
             "data": {
-                "id": "pineconeUpsert_0",
-                "label": "Pinecone Upsert Document",
-                "name": "pineconeUpsert",
+                "id": "pineconeExistingIndex_0",
+                "label": "Pinecone Load Existing Index",
                 "version": 1,
+                "name": "pineconeExistingIndex",
                 "type": "Pinecone",
                 "baseClasses": ["Pinecone", "VectorStoreRetriever", "BaseRetriever"],
                 "category": "Vector Stores",
-                "description": "Upsert documents to Pinecone",
+                "description": "Load existing index from Pinecone (i.e: Document has been upserted)",
                 "inputParams": [
                     {
                         "label": "Connect Credential",
                         "name": "credential",
                         "type": "credential",
                         "credentialNames": ["pineconeApi"],
-                        "id": "pineconeUpsert_0-input-credential-credential"
+                        "id": "pineconeExistingIndex_0-input-credential-credential"
                     },
                     {
                         "label": "Pinecone Index",
                         "name": "pineconeIndex",
                         "type": "string",
-                        "id": "pineconeUpsert_0-input-pineconeIndex-string"
+                        "id": "pineconeExistingIndex_0-input-pineconeIndex-string"
                     },
                     {
                         "label": "Pinecone Namespace",
@@ -278,7 +278,15 @@
                         "placeholder": "my-first-namespace",
                         "additionalParams": true,
                         "optional": true,
-                        "id": "pineconeUpsert_0-input-pineconeNamespace-string"
+                        "id": "pineconeExistingIndex_0-input-pineconeNamespace-string"
+                    },
+                    {
+                        "label": "Pinecone Metadata Filter",
+                        "name": "pineconeMetadataFilter",
+                        "type": "json",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "pineconeExistingIndex_0-input-pineconeMetadataFilter-json"
                     },
                     {
                         "label": "Top K",
@@ -288,29 +296,22 @@
                         "type": "number",
                         "additionalParams": true,
                         "optional": true,
-                        "id": "pineconeUpsert_0-input-topK-number"
+                        "id": "pineconeExistingIndex_0-input-topK-number"
                     }
                 ],
                 "inputAnchors": [
                     {
-                        "label": "Document",
-                        "name": "document",
-                        "type": "Document",
-                        "list": true,
-                        "id": "pineconeUpsert_0-input-document-Document"
-                    },
-                    {
                         "label": "Embeddings",
                         "name": "embeddings",
                         "type": "Embeddings",
-                        "id": "pineconeUpsert_0-input-embeddings-Embeddings"
+                        "id": "pineconeExistingIndex_0-input-embeddings-Embeddings"
                     }
                 ],
                 "inputs": {
-                    "document": ["{{textFile_0.data.instance}}"],
                     "embeddings": "{{openAIEmbeddings_0.data.instance}}",
-                    "pineconeIndex": "",
+                    "pineconeIndex": "newindex",
                     "pineconeNamespace": "",
+                    "pineconeMetadataFilter": "",
                     "topK": ""
                 },
                 "outputAnchors": [
@@ -320,13 +321,13 @@
                         "type": "options",
                         "options": [
                             {
-                                "id": "pineconeUpsert_0-output-retriever-Pinecone|VectorStoreRetriever|BaseRetriever",
+                                "id": "pineconeExistingIndex_0-output-retriever-Pinecone|VectorStoreRetriever|BaseRetriever",
                                 "name": "retriever",
                                 "label": "Pinecone Retriever",
                                 "type": "Pinecone | VectorStoreRetriever | BaseRetriever"
                             },
                             {
-                                "id": "pineconeUpsert_0-output-vectorStore-Pinecone|VectorStore",
+                                "id": "pineconeExistingIndex_0-output-vectorStore-Pinecone|VectorStore",
                                 "name": "vectorStore",
                                 "label": "Pinecone Vector Store",
                                 "type": "Pinecone | VectorStore"
@@ -342,275 +343,240 @@
             },
             "selected": false,
             "positionAbsolute": {
-                "x": 1191.1792786926865,
-                "y": 514.2126330994578
+                "x": 1362.0018461011314,
+                "y": -334.0373537488481
             },
             "dragging": false
         },
         {
             "width": 300,
-            "height": 376,
-            "id": "recursiveCharacterTextSplitter_0",
+            "height": 383,
+            "id": "conversationalRetrievalAgent_0",
             "position": {
-                "x": 406.08456707531263,
-                "y": 197.66460328693972
+                "x": 2345.912948267881,
+                "y": 357.97363342258217
             },
             "type": "customNode",
             "data": {
-                "id": "recursiveCharacterTextSplitter_0",
-                "label": "Recursive Character Text Splitter",
-                "name": "recursiveCharacterTextSplitter",
+                "id": "conversationalRetrievalAgent_0",
+                "label": "Conversational Retrieval Agent",
                 "version": 1,
-                "type": "RecursiveCharacterTextSplitter",
-                "baseClasses": ["RecursiveCharacterTextSplitter", "TextSplitter"],
-                "category": "Text Splitters",
-                "description": "Split documents recursively by different characters - starting with \"\\n\\n\", then \"\\n\", then \" \"",
+                "name": "conversationalRetrievalAgent",
+                "type": "AgentExecutor",
+                "baseClasses": ["AgentExecutor", "BaseChain", "Runnable"],
+                "category": "Agents",
+                "description": "An agent optimized for retrieval during conversation, answering questions based on past dialogue, all using OpenAI's Function Calling",
                 "inputParams": [
-                    {
-                        "label": "Chunk Size",
-                        "name": "chunkSize",
-                        "type": "number",
-                        "default": 1000,
-                        "optional": true,
-                        "id": "recursiveCharacterTextSplitter_0-input-chunkSize-number"
-                    },
-                    {
-                        "label": "Chunk Overlap",
-                        "name": "chunkOverlap",
-                        "type": "number",
-                        "optional": true,
-                        "id": "recursiveCharacterTextSplitter_0-input-chunkOverlap-number"
-                    }
-                ],
-                "inputAnchors": [],
-                "inputs": {
-                    "chunkSize": 1000,
-                    "chunkOverlap": ""
-                },
-                "outputAnchors": [
-                    {
-                        "id": "recursiveCharacterTextSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter",
-                        "name": "recursiveCharacterTextSplitter",
-                        "label": "RecursiveCharacterTextSplitter",
-                        "type": "RecursiveCharacterTextSplitter | TextSplitter"
-                    }
-                ],
-                "outputs": {},
-                "selected": false
-            },
-            "selected": false,
-            "positionAbsolute": {
-                "x": 406.08456707531263,
-                "y": 197.66460328693972
-            },
-            "dragging": false
-        },
-        {
-            "width": 300,
-            "height": 410,
-            "id": "textFile_0",
-            "position": {
-                "x": 786.5497697231324,
-                "y": 140.09563157584407
-            },
-            "type": "customNode",
-            "data": {
-                "id": "textFile_0",
-                "label": "Text File",
-                "name": "textFile",
-                "version": 1,
-                "type": "Document",
-                "baseClasses": ["Document"],
-                "category": "Document Loaders",
-                "description": "Load data from text files",
-                "inputParams": [
-                    {
-                        "label": "Txt File",
-                        "name": "txtFile",
-                        "type": "file",
-                        "fileType": ".txt",
-                        "id": "textFile_0-input-txtFile-file"
-                    },
-                    {
-                        "label": "Metadata",
-                        "name": "metadata",
-                        "type": "json",
-                        "optional": true,
-                        "additionalParams": true,
-                        "id": "textFile_0-input-metadata-json"
-                    }
-                ],
-                "inputAnchors": [
-                    {
-                        "label": "Text Splitter",
-                        "name": "textSplitter",
-                        "type": "TextSplitter",
-                        "optional": true,
-                        "id": "textFile_0-input-textSplitter-TextSplitter"
-                    }
-                ],
-                "inputs": {
-                    "textSplitter": "{{recursiveCharacterTextSplitter_0.data.instance}}",
-                    "metadata": ""
-                },
-                "outputAnchors": [
-                    {
-                        "id": "textFile_0-output-textFile-Document",
-                        "name": "textFile",
-                        "label": "Document",
-                        "type": "Document"
-                    }
-                ],
-                "outputs": {},
-                "selected": false
-            },
-            "selected": false,
-            "positionAbsolute": {
-                "x": 786.5497697231324,
-                "y": 140.09563157584407
-            },
-            "dragging": false
-        },
-        {
-            "width": 300,
-            "height": 479,
-            "id": "conversationalRetrievalQAChain_0",
-            "position": {
-                "x": 1558.6564094656787,
-                "y": 386.60217819991124
-            },
-            "type": "customNode",
-            "data": {
-                "id": "conversationalRetrievalQAChain_0",
-                "label": "Conversational Retrieval QA Chain",
-                "name": "conversationalRetrievalQAChain",
-                "version": 1,
-                "type": "ConversationalRetrievalQAChain",
-                "baseClasses": ["ConversationalRetrievalQAChain", "BaseChain"],
-                "category": "Chains",
-                "description": "Document QA - built on RetrievalQAChain to provide a chat history component",
-                "inputParams": [
-                    {
-                        "label": "Return Source Documents",
-                        "name": "returnSourceDocuments",
-                        "type": "boolean",
-                        "optional": true,
-                        "id": "conversationalRetrievalQAChain_0-input-returnSourceDocuments-boolean"
-                    },
                     {
                         "label": "System Message",
-                        "name": "systemMessagePrompt",
+                        "name": "systemMessage",
                         "type": "string",
                         "rows": 4,
-                        "additionalParams": true,
                         "optional": true,
-                        "placeholder": "I want you to act as a document that I am having a conversation with. Your name is \"AI Assistant\". You will provide me with answers from the given info. If the answer is not included, say exactly \"Hmm, I am not sure.\" and stop after that. Refuse to answer any question not about the info. Never break character.",
-                        "id": "conversationalRetrievalQAChain_0-input-systemMessagePrompt-string"
-                    },
-                    {
-                        "label": "Chain Option",
-                        "name": "chainOption",
-                        "type": "options",
-                        "options": [
-                            {
-                                "label": "MapReduceDocumentsChain",
-                                "name": "map_reduce",
-                                "description": "Suitable for QA tasks over larger documents and can run the preprocessing step in parallel, reducing the running time"
-                            },
-                            {
-                                "label": "RefineDocumentsChain",
-                                "name": "refine",
-                                "description": "Suitable for QA tasks over a large number of documents."
-                            },
-                            {
-                                "label": "StuffDocumentsChain",
-                                "name": "stuff",
-                                "description": "Suitable for QA tasks over a small number of documents."
-                            }
-                        ],
                         "additionalParams": true,
-                        "optional": true,
-                        "id": "conversationalRetrievalQAChain_0-input-chainOption-options"
+                        "id": "conversationalRetrievalAgent_0-input-systemMessage-string"
                     }
                 ],
                 "inputAnchors": [
                     {
-                        "label": "Language Model",
-                        "name": "model",
-                        "type": "BaseLanguageModel",
-                        "id": "conversationalRetrievalQAChain_0-input-model-BaseLanguageModel"
-                    },
-                    {
-                        "label": "Vector Store Retriever",
-                        "name": "vectorStoreRetriever",
-                        "type": "BaseRetriever",
-                        "id": "conversationalRetrievalQAChain_0-input-vectorStoreRetriever-BaseRetriever"
+                        "label": "Allowed Tools",
+                        "name": "tools",
+                        "type": "Tool",
+                        "list": true,
+                        "id": "conversationalRetrievalAgent_0-input-tools-Tool"
                     },
                     {
                         "label": "Memory",
                         "name": "memory",
-                        "type": "BaseMemory",
-                        "optional": true,
-                        "description": "If left empty, a default BufferMemory will be used",
-                        "id": "conversationalRetrievalQAChain_0-input-memory-BaseMemory"
+                        "type": "BaseChatMemory",
+                        "id": "conversationalRetrievalAgent_0-input-memory-BaseChatMemory"
+                    },
+                    {
+                        "label": "OpenAI Chat Model",
+                        "name": "model",
+                        "type": "ChatOpenAI",
+                        "id": "conversationalRetrievalAgent_0-input-model-ChatOpenAI"
                     }
                 ],
                 "inputs": {
+                    "tools": ["{{retrieverTool_0.data.instance}}"],
+                    "memory": "{{bufferMemory_0.data.instance}}",
                     "model": "{{chatOpenAI_0.data.instance}}",
-                    "vectorStoreRetriever": "{{pineconeUpsert_0.data.instance}}",
-                    "memory": "",
-                    "returnSourceDocuments": "",
-                    "systemMessagePrompt": "",
-                    "chainOption": ""
+                    "systemMessage": ""
                 },
                 "outputAnchors": [
                     {
-                        "id": "conversationalRetrievalQAChain_0-output-conversationalRetrievalQAChain-ConversationalRetrievalQAChain|BaseChain",
-                        "name": "conversationalRetrievalQAChain",
-                        "label": "ConversationalRetrievalQAChain",
-                        "type": "ConversationalRetrievalQAChain | BaseChain"
+                        "id": "conversationalRetrievalAgent_0-output-conversationalRetrievalAgent-AgentExecutor|BaseChain|Runnable",
+                        "name": "conversationalRetrievalAgent",
+                        "label": "AgentExecutor",
+                        "type": "AgentExecutor | BaseChain | Runnable"
                     }
                 ],
                 "outputs": {},
                 "selected": false
             },
+            "selected": false,
             "positionAbsolute": {
-                "x": 1558.6564094656787,
-                "y": 386.60217819991124
+                "x": 2345.912948267881,
+                "y": 357.97363342258217
             },
-            "selected": false
+            "dragging": false
+        },
+        {
+            "width": 300,
+            "height": 505,
+            "id": "retrieverTool_0",
+            "position": {
+                "x": 1770.1485365275375,
+                "y": -321.14473253480946
+            },
+            "type": "customNode",
+            "data": {
+                "id": "retrieverTool_0",
+                "label": "Retriever Tool",
+                "version": 1,
+                "name": "retrieverTool",
+                "type": "RetrieverTool",
+                "baseClasses": ["RetrieverTool", "DynamicTool", "Tool", "StructuredTool", "Runnable"],
+                "category": "Tools",
+                "description": "Use a retriever as allowed tool for agent",
+                "inputParams": [
+                    {
+                        "label": "Retriever Name",
+                        "name": "name",
+                        "type": "string",
+                        "placeholder": "search_state_of_union",
+                        "id": "retrieverTool_0-input-name-string"
+                    },
+                    {
+                        "label": "Retriever Description",
+                        "name": "description",
+                        "type": "string",
+                        "description": "When should agent uses to retrieve documents",
+                        "rows": 3,
+                        "placeholder": "Searches and returns documents regarding the state-of-the-union.",
+                        "id": "retrieverTool_0-input-description-string"
+                    }
+                ],
+                "inputAnchors": [
+                    {
+                        "label": "Retriever",
+                        "name": "retriever",
+                        "type": "BaseRetriever",
+                        "id": "retrieverTool_0-input-retriever-BaseRetriever"
+                    }
+                ],
+                "inputs": {
+                    "name": "search_website",
+                    "description": "Searches and return documents regarding Jane - a culinary institution that offers top quality coffee, pastries, breakfast, lunch, and a variety of baked goods. They have multiple locations, including Jane on Fillmore, Jane on Larkin, Jane the Bakery, Toy Boat By Jane, and Little Jane on Grant. They emphasize healthy eating with a focus on flavor and quality ingredients. They bake everything in-house and work with local suppliers to source ingredients directly from farmers. They also offer catering services and delivery options.",
+                    "retriever": "{{pineconeExistingIndex_0.data.instance}}"
+                },
+                "outputAnchors": [
+                    {
+                        "id": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+                        "name": "retrieverTool",
+                        "label": "RetrieverTool",
+                        "type": "RetrieverTool | DynamicTool | Tool | StructuredTool | Runnable"
+                    }
+                ],
+                "outputs": {},
+                "selected": false
+            },
+            "selected": false,
+            "dragging": false,
+            "positionAbsolute": {
+                "x": 1770.1485365275375,
+                "y": -321.14473253480946
+            }
+        },
+        {
+            "width": 300,
+            "height": 376,
+            "id": "bufferMemory_0",
+            "position": {
+                "x": 1771.396291209036,
+                "y": 216.94151328212496
+            },
+            "type": "customNode",
+            "data": {
+                "id": "bufferMemory_0",
+                "label": "Buffer Memory",
+                "version": 1,
+                "name": "bufferMemory",
+                "type": "BufferMemory",
+                "baseClasses": ["BufferMemory", "BaseChatMemory", "BaseMemory"],
+                "category": "Memory",
+                "description": "Remembers previous conversational back and forths directly",
+                "inputParams": [
+                    {
+                        "label": "Memory Key",
+                        "name": "memoryKey",
+                        "type": "string",
+                        "default": "chat_history",
+                        "id": "bufferMemory_0-input-memoryKey-string"
+                    },
+                    {
+                        "label": "Input Key",
+                        "name": "inputKey",
+                        "type": "string",
+                        "default": "input",
+                        "id": "bufferMemory_0-input-inputKey-string"
+                    }
+                ],
+                "inputAnchors": [],
+                "inputs": {
+                    "memoryKey": "chat_history",
+                    "inputKey": "input"
+                },
+                "outputAnchors": [
+                    {
+                        "id": "bufferMemory_0-output-bufferMemory-BufferMemory|BaseChatMemory|BaseMemory",
+                        "name": "bufferMemory",
+                        "label": "BufferMemory",
+                        "type": "BufferMemory | BaseChatMemory | BaseMemory"
+                    }
+                ],
+                "outputs": {},
+                "selected": false
+            },
+            "selected": false,
+            "positionAbsolute": {
+                "x": 1771.396291209036,
+                "y": 216.94151328212496
+            },
+            "dragging": false
         }
     ],
     "edges": [
         {
             "source": "openAIEmbeddings_0",
             "sourceHandle": "openAIEmbeddings_0-output-openAIEmbeddings-OpenAIEmbeddings|Embeddings",
-            "target": "pineconeUpsert_0",
-            "targetHandle": "pineconeUpsert_0-input-embeddings-Embeddings",
+            "target": "pineconeExistingIndex_0",
+            "targetHandle": "pineconeExistingIndex_0-input-embeddings-Embeddings",
             "type": "buttonedge",
-            "id": "openAIEmbeddings_0-openAIEmbeddings_0-output-openAIEmbeddings-OpenAIEmbeddings|Embeddings-pineconeUpsert_0-pineconeUpsert_0-input-embeddings-Embeddings",
+            "id": "openAIEmbeddings_0-openAIEmbeddings_0-output-openAIEmbeddings-OpenAIEmbeddings|Embeddings-pineconeExistingIndex_0-pineconeExistingIndex_0-input-embeddings-Embeddings",
             "data": {
                 "label": ""
             }
         },
         {
-            "source": "recursiveCharacterTextSplitter_0",
-            "sourceHandle": "recursiveCharacterTextSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter",
-            "target": "textFile_0",
-            "targetHandle": "textFile_0-input-textSplitter-TextSplitter",
+            "source": "pineconeExistingIndex_0",
+            "sourceHandle": "pineconeExistingIndex_0-output-retriever-Pinecone|VectorStoreRetriever|BaseRetriever",
+            "target": "retrieverTool_0",
+            "targetHandle": "retrieverTool_0-input-retriever-BaseRetriever",
             "type": "buttonedge",
-            "id": "recursiveCharacterTextSplitter_0-recursiveCharacterTextSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter-textFile_0-textFile_0-input-textSplitter-TextSplitter",
+            "id": "pineconeExistingIndex_0-pineconeExistingIndex_0-output-retriever-Pinecone|VectorStoreRetriever|BaseRetriever-retrieverTool_0-retrieverTool_0-input-retriever-BaseRetriever",
             "data": {
                 "label": ""
             }
         },
         {
-            "source": "textFile_0",
-            "sourceHandle": "textFile_0-output-textFile-Document",
-            "target": "pineconeUpsert_0",
-            "targetHandle": "pineconeUpsert_0-input-document-Document",
+            "source": "retrieverTool_0",
+            "sourceHandle": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+            "target": "conversationalRetrievalAgent_0",
+            "targetHandle": "conversationalRetrievalAgent_0-input-tools-Tool",
             "type": "buttonedge",
-            "id": "textFile_0-textFile_0-output-textFile-Document-pineconeUpsert_0-pineconeUpsert_0-input-document-Document",
+            "id": "retrieverTool_0-retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable-conversationalRetrievalAgent_0-conversationalRetrievalAgent_0-input-tools-Tool",
             "data": {
                 "label": ""
             }
@@ -618,21 +584,21 @@
         {
             "source": "chatOpenAI_0",
             "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel",
-            "target": "conversationalRetrievalQAChain_0",
-            "targetHandle": "conversationalRetrievalQAChain_0-input-model-BaseLanguageModel",
+            "target": "conversationalRetrievalAgent_0",
+            "targetHandle": "conversationalRetrievalAgent_0-input-model-ChatOpenAI",
             "type": "buttonedge",
-            "id": "chatOpenAI_0-chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel-conversationalRetrievalQAChain_0-conversationalRetrievalQAChain_0-input-model-BaseLanguageModel",
+            "id": "chatOpenAI_0-chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel-conversationalRetrievalAgent_0-conversationalRetrievalAgent_0-input-model-ChatOpenAI",
             "data": {
                 "label": ""
             }
         },
         {
-            "source": "pineconeUpsert_0",
-            "sourceHandle": "pineconeUpsert_0-output-retriever-Pinecone|VectorStoreRetriever|BaseRetriever",
-            "target": "conversationalRetrievalQAChain_0",
-            "targetHandle": "conversationalRetrievalQAChain_0-input-vectorStoreRetriever-BaseRetriever",
+            "source": "bufferMemory_0",
+            "sourceHandle": "bufferMemory_0-output-bufferMemory-BufferMemory|BaseChatMemory|BaseMemory",
+            "target": "conversationalRetrievalAgent_0",
+            "targetHandle": "conversationalRetrievalAgent_0-input-memory-BaseChatMemory",
             "type": "buttonedge",
-            "id": "pineconeUpsert_0-pineconeUpsert_0-output-retriever-Pinecone|VectorStoreRetriever|BaseRetriever-conversationalRetrievalQAChain_0-conversationalRetrievalQAChain_0-input-vectorStoreRetriever-BaseRetriever",
+            "id": "bufferMemory_0-bufferMemory_0-output-bufferMemory-BufferMemory|BaseChatMemory|BaseMemory-conversationalRetrievalAgent_0-conversationalRetrievalAgent_0-input-memory-BaseChatMemory",
             "data": {
                 "label": ""
             }

@@ -1,5 +1,5 @@
 {
-    "description": "Simple LLM Chain using HuggingFace Inference API on falcon-7b-instruct model",
+    "description": "Basic example of stateless (no memory) LLM Chain with a Prompt Template and LLM Model",
     "nodes": [
         {
             "width": 300,
@@ -44,7 +44,7 @@
                     }
                 ],
                 "inputs": {
-                    "model": "{{huggingFaceInference_LLMs_0.data.instance}}",
+                    "model": "{{openAI_0.data.instance}}",
                     "prompt": "{{promptTemplate_0.data.instance}}",
                     "chainName": ""
                 },
@@ -87,8 +87,8 @@
             "height": 475,
             "id": "promptTemplate_0",
             "position": {
-                "x": 506.50436294210306,
-                "y": 504.50766458127396
+                "x": 517.7412884791509,
+                "y": 506.7411400888471
             },
             "type": "customNode",
             "data": {
@@ -121,7 +121,7 @@
                 ],
                 "inputAnchors": [],
                 "inputs": {
-                    "template": "Question: {question}\n\nAnswer: Let's think step by step.",
+                    "template": "What is a good name for a company that makes {product}?",
                     "promptValues": ""
                 },
                 "outputAnchors": [
@@ -137,117 +137,155 @@
             },
             "selected": false,
             "positionAbsolute": {
-                "x": 506.50436294210306,
-                "y": 504.50766458127396
+                "x": 517.7412884791509,
+                "y": 506.7411400888471
             },
             "dragging": false
         },
         {
             "width": 300,
-            "height": 526,
-            "id": "huggingFaceInference_LLMs_0",
+            "height": 523,
+            "id": "openAI_0",
             "position": {
-                "x": 498.8594464193537,
-                "y": -44.91050256311678
+                "x": 513.3297923232442,
+                "y": -42.67554802812833
             },
             "type": "customNode",
             "data": {
-                "id": "huggingFaceInference_LLMs_0",
-                "label": "HuggingFace Inference",
-                "name": "huggingFaceInference_LLMs",
+                "id": "openAI_0",
+                "label": "OpenAI",
+                "name": "openAI",
                 "version": 1,
-                "type": "HuggingFaceInference",
-                "baseClasses": ["HuggingFaceInference", "LLM", "BaseLLM", "BaseLanguageModel"],
+                "type": "OpenAI",
+                "baseClasses": ["OpenAI", "BaseLLM", "BaseLanguageModel"],
                 "category": "LLMs",
-                "description": "Wrapper around HuggingFace large language models",
+                "description": "Wrapper around OpenAI large language models",
                 "inputParams": [
                     {
                         "label": "Connect Credential",
                         "name": "credential",
                         "type": "credential",
-                        "credentialNames": ["huggingFaceApi"],
-                        "id": "huggingFaceInference_LLMs_0-input-credential-credential"
+                        "credentialNames": ["openAIApi"],
+                        "id": "openAI_0-input-credential-credential"
                     },
                     {
-                        "label": "Model",
-                        "name": "model",
-                        "type": "string",
-                        "description": "If using own inference endpoint, leave this blank",
-                        "placeholder": "gpt2",
+                        "label": "Model Name",
+                        "name": "modelName",
+                        "type": "options",
+                        "options": [
+                            {
+                                "label": "text-davinci-003",
+                                "name": "text-davinci-003"
+                            },
+                            {
+                                "label": "text-davinci-002",
+                                "name": "text-davinci-002"
+                            },
+                            {
+                                "label": "text-curie-001",
+                                "name": "text-curie-001"
+                            },
+                            {
+                                "label": "text-babbage-001",
+                                "name": "text-babbage-001"
+                            }
+                        ],
+                        "default": "text-davinci-003",
                         "optional": true,
-                        "id": "huggingFaceInference_LLMs_0-input-model-string"
-                    },
-                    {
-                        "label": "Endpoint",
-                        "name": "endpoint",
-                        "type": "string",
-                        "placeholder": "https://xyz.eu-west-1.aws.endpoints.huggingface.cloud/gpt2",
-                        "description": "Using your own inference endpoint",
-                        "optional": true,
-                        "id": "huggingFaceInference_LLMs_0-input-endpoint-string"
+                        "id": "openAI_0-input-modelName-options"
                     },
                     {
                         "label": "Temperature",
                         "name": "temperature",
                         "type": "number",
-                        "description": "Temperature parameter may not apply to certain model. Please check available model parameters",
+                        "default": 0.7,
                         "optional": true,
-                        "additionalParams": true,
-                        "id": "huggingFaceInference_LLMs_0-input-temperature-number"
+                        "id": "openAI_0-input-temperature-number"
                     },
                     {
                         "label": "Max Tokens",
                         "name": "maxTokens",
                         "type": "number",
-                        "description": "Max Tokens parameter may not apply to certain model. Please check available model parameters",
                         "optional": true,
                         "additionalParams": true,
-                        "id": "huggingFaceInference_LLMs_0-input-maxTokens-number"
+                        "id": "openAI_0-input-maxTokens-number"
                     },
                     {
                         "label": "Top Probability",
                         "name": "topP",
                         "type": "number",
-                        "description": "Top Probability parameter may not apply to certain model. Please check available model parameters",
                         "optional": true,
                         "additionalParams": true,
-                        "id": "huggingFaceInference_LLMs_0-input-topP-number"
+                        "id": "openAI_0-input-topP-number"
                     },
                     {
-                        "label": "Top K",
-                        "name": "hfTopK",
+                        "label": "Best Of",
+                        "name": "bestOf",
                         "type": "number",
-                        "description": "Top K parameter may not apply to certain model. Please check available model parameters",
                         "optional": true,
                         "additionalParams": true,
-                        "id": "huggingFaceInference_LLMs_0-input-hfTopK-number"
+                        "id": "openAI_0-input-bestOf-number"
                     },
                     {
                         "label": "Frequency Penalty",
                         "name": "frequencyPenalty",
                         "type": "number",
-                        "description": "Frequency Penalty parameter may not apply to certain model. Please check available model parameters",
                         "optional": true,
                         "additionalParams": true,
-                        "id": "huggingFaceInference_LLMs_0-input-frequencyPenalty-number"
+                        "id": "openAI_0-input-frequencyPenalty-number"
+                    },
+                    {
+                        "label": "Presence Penalty",
+                        "name": "presencePenalty",
+                        "type": "number",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "openAI_0-input-presencePenalty-number"
+                    },
+                    {
+                        "label": "Batch Size",
+                        "name": "batchSize",
+                        "type": "number",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "openAI_0-input-batchSize-number"
+                    },
+                    {
+                        "label": "Timeout",
+                        "name": "timeout",
+                        "type": "number",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "openAI_0-input-timeout-number"
+                    },
+                    {
+                        "label": "BasePath",
+                        "name": "basepath",
+                        "type": "string",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "openAI_0-input-basepath-string"
                     }
                 ],
                 "inputAnchors": [],
                 "inputs": {
-                    "model": "tiiuae/falcon-7b-instruct",
-                    "endpoint": "",
-                    "temperature": "",
+                    "modelName": "text-davinci-003",
+                    "temperature": 0.7,
                     "maxTokens": "",
                     "topP": "",
-                    "hfTopK": "",
-                    "frequencyPenalty": ""
+                    "bestOf": "",
+                    "frequencyPenalty": "",
+                    "presencePenalty": "",
+                    "batchSize": "",
+                    "timeout": "",
+                    "basepath": ""
                 },
                 "outputAnchors": [
                     {
-                        "id": "huggingFaceInference_LLMs_0-output-huggingFaceInference_LLMs-HuggingFaceInference|LLM|BaseLLM|BaseLanguageModel",
-                        "name": "huggingFaceInference_LLMs",
-                        "label": "HuggingFaceInference",
-                        "type": "HuggingFaceInference | LLM | BaseLLM | BaseLanguageModel"
+                        "id": "openAI_0-output-openAI-OpenAI|BaseLLM|BaseLanguageModel",
+                        "name": "openAI",
+                        "label": "OpenAI",
+                        "type": "OpenAI | BaseLLM | BaseLanguageModel"
                     }
                 ],
                 "outputs": {},
@@ -255,8 +293,8 @@
             },
             "selected": false,
             "positionAbsolute": {
-                "x": 498.8594464193537,
-                "y": -44.91050256311678
+                "x": 513.3297923232442,
+                "y": -42.67554802812833
             },
             "dragging": false
         }
@@ -274,12 +312,12 @@
             }
         },
         {
-            "source": "huggingFaceInference_LLMs_0",
-            "sourceHandle": "huggingFaceInference_LLMs_0-output-huggingFaceInference_LLMs-HuggingFaceInference|LLM|BaseLLM|BaseLanguageModel",
+            "source": "openAI_0",
+            "sourceHandle": "openAI_0-output-openAI-OpenAI|BaseLLM|BaseLanguageModel",
             "target": "llmChain_1",
             "targetHandle": "llmChain_1-input-model-BaseLanguageModel",
             "type": "buttonedge",
-            "id": "huggingFaceInference_LLMs_0-huggingFaceInference_LLMs_0-output-huggingFaceInference_LLMs-HuggingFaceInference|LLM|BaseLLM|BaseLanguageModel-llmChain_1-llmChain_1-input-model-BaseLanguageModel",
+            "id": "openAI_0-openAI_0-output-openAI-OpenAI|BaseLLM|BaseLanguageModel-llmChain_1-llmChain_1-input-model-BaseLanguageModel",
             "data": {
                 "label": ""
             }
