@@ -1,7 +1,6 @@
-import { BaseCache } from '@langchain/core/caches'
-import { HFInput, HuggingFaceInference } from './core'
 import { ICommonObject, INode, INodeData, INodeParams } from '../../../src/Interface'
 import { getBaseClasses, getCredentialData, getCredentialParam } from '../../../src/utils'
+import { HFInput, HuggingFaceInference } from './core'
 
 class ChatHuggingFace_ChatModels implements INode {
     label: string
@@ -18,9 +17,9 @@ class ChatHuggingFace_ChatModels implements INode {
     constructor() {
         this.label = 'ChatHuggingFace'
         this.name = 'chatHuggingFace'
-        this.version = 3.0
+        this.version = 1.0
         this.type = 'ChatHuggingFace'
-        this.icon = 'HuggingFace.svg'
+        this.icon = 'huggingface.png'
         this.category = 'Chat Models'
         this.description = 'Wrapper around HuggingFace large language models'
         this.baseClasses = [this.type, 'BaseChatModel', ...getBaseClasses(HuggingFaceInference)]
@@ -32,17 +31,12 @@ class ChatHuggingFace_ChatModels implements INode {
         }
         this.inputs = [
             {
-                label: 'Cache',
-                name: 'cache',
-                type: 'BaseCache',
-                optional: true
-            },
-            {
                 label: 'Model',
                 name: 'model',
                 type: 'string',
                 description: 'If using own inference endpoint, leave this blank',
-                placeholder: 'gpt2'
+                placeholder: 'gpt2',
+                optional: true
             },
             {
                 label: 'Endpoint',
@@ -96,16 +90,6 @@ class ChatHuggingFace_ChatModels implements INode {
                 description: 'Frequency Penalty parameter may not apply to certain model. Please check available model parameters',
                 optional: true,
                 additionalParams: true
-            },
-            {
-                label: 'Stop Sequence',
-                name: 'stop',
-                type: 'string',
-                rows: 4,
-                placeholder: 'AI assistant:',
-                description: 'Sets the stop sequences to use. Use comma to seperate different sequences.',
-                optional: true,
-                additionalParams: true
             }
         ]
     }
@@ -118,8 +102,6 @@ class ChatHuggingFace_ChatModels implements INode {
         const hfTopK = nodeData.inputs?.hfTopK as string
         const frequencyPenalty = nodeData.inputs?.frequencyPenalty as string
         const endpoint = nodeData.inputs?.endpoint as string
-        const cache = nodeData.inputs?.cache as BaseCache
-        const stop = nodeData.inputs?.stop as string
 
         const credentialData = await getCredentialData(nodeData.credential ?? '', options)
         const huggingFaceApiKey = getCredentialParam('huggingFaceApiKey', credentialData, nodeData)
@@ -134,14 +116,9 @@ class ChatHuggingFace_ChatModels implements INode {
         if (topP) obj.topP = parseFloat(topP)
         if (hfTopK) obj.topK = parseFloat(hfTopK)
         if (frequencyPenalty) obj.frequencyPenalty = parseFloat(frequencyPenalty)
-        if (endpoint) obj.endpointUrl = endpoint
-        if (stop) {
-            const stopSequences = stop.split(',')
-            obj.stopSequences = stopSequences
-        }
+        if (endpoint) obj.endpoint = endpoint
 
         const huggingFace = new HuggingFaceInference(obj)
-        if (cache) huggingFace.cache = cache
         return huggingFace
     }
 }

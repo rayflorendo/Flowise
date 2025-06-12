@@ -1,10 +1,8 @@
-import { BaseLanguageModel } from '@langchain/core/language_models/base'
-import { MultiPromptChain } from 'langchain/chains'
-import { ICommonObject, INode, INodeData, INodeParams, IServerSideEventStreamer, PromptRetriever } from '../../../src/Interface'
+import { BaseLanguageModel } from 'langchain/base_language'
+import { ICommonObject, INode, INodeData, INodeParams, PromptRetriever } from '../../../src/Interface'
 import { getBaseClasses } from '../../../src/utils'
-import { ConsoleCallbackHandler, CustomChainHandler, additionalCallbacks } from '../../../src/handler'
-import { checkInputs, Moderation, streamResponse } from '../../moderation/Moderation'
-import { formatResponse } from '../../outputparsers/OutputParserHelpers'
+import { MultiPromptChain } from 'langchain/chains'
+import { ConsoleCallbackHandler, CustomChainHandler } from '../../../src/handler'
 
 class MultiPromptChain_Chains implements INode {
     label: string
@@ -20,9 +18,9 @@ class MultiPromptChain_Chains implements INode {
     constructor() {
         this.label = 'Multi Prompt Chain'
         this.name = 'multiPromptChain'
-        this.version = 2.0
+        this.version = 1.0
         this.type = 'MultiPromptChain'
-        this.icon = 'prompt.svg'
+        this.icon = 'chain.svg'
         this.category = 'Chains'
         this.description = 'Chain automatically picks an appropriate prompt from multiple prompt templates'
         this.baseClasses = [this.type, ...getBaseClasses(MultiPromptChain)]
@@ -36,14 +34,6 @@ class MultiPromptChain_Chains implements INode {
                 label: 'Prompt Retriever',
                 name: 'promptRetriever',
                 type: 'PromptRetriever',
-                list: true
-            },
-            {
-                label: 'Input Moderation',
-                description: 'Detect text that could generate harmful output and prevent it from being sent to the language model',
-                name: 'inputModeration',
-                type: 'Moderation',
-                optional: true,
                 list: true
             }
         ]
@@ -72,38 +62,18 @@ class MultiPromptChain_Chains implements INode {
         return chain
     }
 
-    async run(nodeData: INodeData, input: string, options: ICommonObject): Promise<string | object> {
+    async run(nodeData: INodeData, input: string, options: ICommonObject): Promise<string> {
         const chain = nodeData.instance as MultiPromptChain
-        const moderations = nodeData.inputs?.inputModeration as Moderation[]
-
-        // this is true if the prediction is external and the client has requested streaming='true'
-        const shouldStreamResponse = options.shouldStreamResponse
-        const sseStreamer: IServerSideEventStreamer = options.sseStreamer as IServerSideEventStreamer
-        const chatId = options.chatId
-
-        if (moderations && moderations.length > 0) {
-            try {
-                // Use the output of the moderation chain as input for the Multi Prompt Chain
-                input = await checkInputs(moderations, input)
-            } catch (e) {
-                await new Promise((resolve) => setTimeout(resolve, 500))
-                if (options.shouldStreamResponse) {
-                    streamResponse(options.sseStreamer, options.chatId, e.message)
-                }
-                return formatResponse(e.message)
-            }
-        }
         const obj = { input }
 
-        const loggerHandler = new ConsoleCallbackHandler(options.logger, options?.orgId)
-        const callbacks = await additionalCallbacks(nodeData, options)
+        const loggerHandler = new ConsoleCallbackHandler(options.logger)
 
-        if (shouldStreamResponse) {
-            const handler = new CustomChainHandler(sseStreamer, chatId, 2)
-            const res = await chain.call(obj, [loggerHandler, handler, ...callbacks])
+        if (options.socketIO && options.socketIOClientId) {
+            const handler = new CustomChainHandler(options.socketIO, options.socketIOClientId, 2)
+            const res = await chain.call(obj, [loggerHandler, handler])
             return res?.text
         } else {
-            const res = await chain.call(obj, [loggerHandler, ...callbacks])
+            const res = await chain.call(obj, [loggerHandler])
             return res?.text
         }
     }
