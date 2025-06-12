@@ -1,7 +1,6 @@
-import { Chroma, ChromaLibArgs } from '@langchain/community/vectorstores/chroma'
-import { Embeddings } from '@langchain/core/embeddings'
+import { Chroma, ChromaLibArgs } from 'langchain/vectorstores/chroma'
+import { Embeddings } from 'langchain/embeddings/base'
 import type { Collection } from 'chromadb'
-import { ChromaClient } from 'chromadb'
 
 interface ChromaAuth {
     chromaApiKey?: string
@@ -9,8 +8,6 @@ interface ChromaAuth {
 
 export class ChromaExtended extends Chroma {
     chromaApiKey?: string
-    chromaTenant?: string
-    chromaDatabase?: string
 
     constructor(embeddings: Embeddings, args: ChromaLibArgs & Partial<ChromaAuth>) {
         super(embeddings, args)
@@ -26,28 +23,22 @@ export class ChromaExtended extends Chroma {
     async ensureCollection(): Promise<Collection> {
         if (!this.collection) {
             if (!this.index) {
+                const { ChromaClient } = await Chroma.imports()
                 const obj: any = {
                     path: this.url
                 }
                 if (this.chromaApiKey) {
                     obj.fetchOptions = {
                         headers: {
-                            Authorization: `Bearer ${this.chromaApiKey}`
+                            'X-Api-Key': this.chromaApiKey
                         }
                     }
-                }
-                if (this.chromaTenant) {
-                    obj.tenant = this.chromaTenant
-                }
-                if (this.chromaDatabase) {
-                    obj.database = this.chromaDatabase
                 }
                 this.index = new ChromaClient(obj)
             }
             try {
-                this.collection = await this.index!.getOrCreateCollection({
-                    name: this.collectionName,
-                    ...(this.collectionMetadata && { metadata: this.collectionMetadata })
+                this.collection = await this.index.getOrCreateCollection({
+                    name: this.collectionName
                 })
             } catch (err) {
                 throw new Error(`Chroma getOrCreateCollection error: ${err}`)
