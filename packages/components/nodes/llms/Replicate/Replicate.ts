@@ -1,8 +1,6 @@
-import { BaseCache } from '@langchain/core/caches'
-import { BaseLLMParams } from '@langchain/core/language_models/llms'
 import { ICommonObject, INode, INodeData, INodeParams } from '../../../src/Interface'
 import { getBaseClasses, getCredentialData, getCredentialParam } from '../../../src/utils'
-import { Replicate, ReplicateInput } from './core'
+import { Replicate, ReplicateInput } from 'langchain/llms/replicate'
 
 class Replicate_LLMs implements INode {
     label: string
@@ -19,7 +17,7 @@ class Replicate_LLMs implements INode {
     constructor() {
         this.label = 'Replicate'
         this.name = 'replicate'
-        this.version = 2.0
+        this.version = 1.0
         this.type = 'Replicate'
         this.icon = 'replicate.svg'
         this.category = 'LLMs'
@@ -32,12 +30,6 @@ class Replicate_LLMs implements INode {
             credentialNames: ['replicateApi']
         }
         this.inputs = [
-            {
-                label: 'Cache',
-                name: 'cache',
-                type: 'BaseCache',
-                optional: true
-            },
             {
                 label: 'Model',
                 name: 'model',
@@ -97,7 +89,7 @@ class Replicate_LLMs implements INode {
     }
 
     async init(nodeData: INodeData, _: string, options: ICommonObject): Promise<any> {
-        const modelName = nodeData.inputs?.model as `${string}/${string}` | `${string}/${string}:${string}`
+        const modelName = nodeData.inputs?.model as string
         const temperature = nodeData.inputs?.temperature as string
         const maxTokens = nodeData.inputs?.maxTokens as string
         const topP = nodeData.inputs?.topP as string
@@ -107,10 +99,12 @@ class Replicate_LLMs implements INode {
         const credentialData = await getCredentialData(nodeData.credential ?? '', options)
         const apiKey = getCredentialParam('replicateApiKey', credentialData, nodeData)
 
-        const cache = nodeData.inputs?.cache as BaseCache
+        const version = modelName.split(':').pop()
+        const name = modelName.split(':')[0].split('/').pop()
+        const org = modelName.split(':')[0].split('/')[0]
 
-        const obj: ReplicateInput & BaseLLMParams = {
-            model: modelName,
+        const obj: ReplicateInput = {
+            model: `${org}/${name}:${version}`,
             apiKey
         }
 
@@ -125,8 +119,6 @@ class Replicate_LLMs implements INode {
             inputs = { ...inputs, ...parsedInputs }
         }
         if (Object.keys(inputs).length) obj.input = inputs
-
-        if (cache) obj.cache = cache
 
         const model = new Replicate(obj)
         return model

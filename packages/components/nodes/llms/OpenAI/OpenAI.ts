@@ -1,9 +1,6 @@
-import { ClientOptions, OpenAI, OpenAIInput } from '@langchain/openai'
-import { BaseCache } from '@langchain/core/caches'
-import { BaseLLMParams } from '@langchain/core/language_models/llms'
-import { ICommonObject, INode, INodeData, INodeOptionsValue, INodeParams } from '../../../src/Interface'
+import { ICommonObject, INode, INodeData, INodeParams } from '../../../src/Interface'
 import { getBaseClasses, getCredentialData, getCredentialParam } from '../../../src/utils'
-import { getModels, MODEL_TYPE } from '../../../src/modelLoader'
+import { OpenAI, OpenAIInput } from 'langchain/llms/openai'
 
 class OpenAI_LLMs implements INode {
     label: string
@@ -20,9 +17,9 @@ class OpenAI_LLMs implements INode {
     constructor() {
         this.label = 'OpenAI'
         this.name = 'openAI'
-        this.version = 4.0
+        this.version = 1.0
         this.type = 'OpenAI'
-        this.icon = 'openai.svg'
+        this.icon = 'openai.png'
         this.category = 'LLMs'
         this.description = 'Wrapper around OpenAI large language models'
         this.baseClasses = [this.type, ...getBaseClasses(OpenAI)]
@@ -34,17 +31,29 @@ class OpenAI_LLMs implements INode {
         }
         this.inputs = [
             {
-                label: 'Cache',
-                name: 'cache',
-                type: 'BaseCache',
-                optional: true
-            },
-            {
                 label: 'Model Name',
                 name: 'modelName',
-                type: 'asyncOptions',
-                loadMethod: 'listModels',
-                default: 'gpt-3.5-turbo-instruct'
+                type: 'options',
+                options: [
+                    {
+                        label: 'text-davinci-003',
+                        name: 'text-davinci-003'
+                    },
+                    {
+                        label: 'text-davinci-002',
+                        name: 'text-davinci-002'
+                    },
+                    {
+                        label: 'text-curie-001',
+                        name: 'text-curie-001'
+                    },
+                    {
+                        label: 'text-babbage-001',
+                        name: 'text-babbage-001'
+                    }
+                ],
+                default: 'text-davinci-003',
+                optional: true
             },
             {
                 label: 'Temperature',
@@ -116,22 +125,8 @@ class OpenAI_LLMs implements INode {
                 type: 'string',
                 optional: true,
                 additionalParams: true
-            },
-            {
-                label: 'BaseOptions',
-                name: 'baseOptions',
-                type: 'json',
-                optional: true,
-                additionalParams: true
             }
         ]
-    }
-
-    //@ts-ignore
-    loadMethods = {
-        async listModels(): Promise<INodeOptionsValue[]> {
-            return await getModels(MODEL_TYPE.LLM, 'openAI')
-        }
     }
 
     async init(nodeData: INodeData, _: string, options: ICommonObject): Promise<any> {
@@ -146,14 +141,11 @@ class OpenAI_LLMs implements INode {
         const bestOf = nodeData.inputs?.bestOf as string
         const streaming = nodeData.inputs?.streaming as boolean
         const basePath = nodeData.inputs?.basepath as string
-        const baseOptions = nodeData.inputs?.baseOptions
 
         const credentialData = await getCredentialData(nodeData.credential ?? '', options)
         const openAIApiKey = getCredentialParam('openAIApiKey', credentialData, nodeData)
 
-        const cache = nodeData.inputs?.cache as BaseCache
-
-        const obj: Partial<OpenAIInput> & BaseLLMParams & { configuration?: ClientOptions } = {
+        const obj: Partial<OpenAIInput> & { openAIApiKey?: string } = {
             temperature: parseFloat(temperature),
             modelName,
             openAIApiKey,
@@ -168,25 +160,9 @@ class OpenAI_LLMs implements INode {
         if (batchSize) obj.batchSize = parseInt(batchSize, 10)
         if (bestOf) obj.bestOf = parseInt(bestOf, 10)
 
-        if (cache) obj.cache = cache
-
-        let parsedBaseOptions: any | undefined = undefined
-        if (baseOptions) {
-            try {
-                parsedBaseOptions = typeof baseOptions === 'object' ? baseOptions : JSON.parse(baseOptions)
-            } catch (exception) {
-                throw new Error("Invalid JSON in the OpenAI's BaseOptions: " + exception)
-            }
-        }
-
-        if (basePath || parsedBaseOptions) {
-            obj.configuration = {
-                baseURL: basePath,
-                defaultHeaders: parsedBaseOptions
-            }
-        }
-
-        const model = new OpenAI(obj)
+        const model = new OpenAI(obj, {
+            basePath
+        })
         return model
     }
 }
