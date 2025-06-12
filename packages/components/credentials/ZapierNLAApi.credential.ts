@@ -1,24 +1,24 @@
 import { INodeParams, INodeCredential } from '../src/Interface'
 
-class ChromaApi implements INodeCredential {
+class ZapierNLAApi implements INodeCredential {
     label: string
     name: string
-    description: string
     version: number
+    description: string
     inputs: INodeParams[]
 
     constructor() {
-        this.label = 'Chroma API'
-        this.name = 'chromaApi'
+        this.label = 'Zapier NLA API'
+        this.name = 'zapierNLAApi'
         this.version = 1.0
         this.inputs = [
             {
-                label: 'Chroma Api Key',
-                name: 'chromaApiKey',
+                label: 'Zapier NLA Api Key',
+                name: 'zapierNLAApiKey',
                 type: 'password'
             }
         ]
     }
 }
 
-module.exports = { credClass: ChromaApi }
+module.exports = { credClass: ZapierNLAApi }

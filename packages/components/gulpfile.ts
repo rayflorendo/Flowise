@@ -1,4 +1,6 @@
-const { src, dest } = require('gulp')
+import gulp from 'gulp'
+
+const { src, dest } = gulp
 
 function copyIcons() {
     return src(['nodes/**/*.{jpg,png,svg}']).pipe(dest('dist/nodes'))
